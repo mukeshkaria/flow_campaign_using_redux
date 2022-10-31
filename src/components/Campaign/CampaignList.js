@@ -7,8 +7,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import classes from "./CampaignList.module.css";
+import { useSelector } from "react-redux";
 
-const CampaignList = ({ campaigns = [] }) => {
+const CampaignList = () => {
+  const campaigns = useSelector((state) => state.campaign.filteredCampaigns);
+
   const badgeStyle = (isActive) => {
     if (isActive) {
       return classes["badge-active"];

@@ -7,29 +7,62 @@ import TextField from "@mui/material/TextField";
 import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import { useSelector, useDispatch } from "react-redux";
+import { campaignActions } from "../../store/campaign-slice";
 
-const CampaignSearch = (props) => {
-  const startDateValue = props.startDateValue;
-  const endDateValue = props.endDateValue;
-  const searchNameValue = props.searchNameValue;
+const CampaignSearch = () => {
+  const dispatch = useDispatch();
+  const startDateValue = useSelector((state) => state.campaign.startDate);
+  const endDateValue = useSelector((state) => state.campaign.endDate);
+  const searchNameValue = useSelector((state) => state.campaign.searchName);
 
   const startDateChangeHandler = (newValue) => {
-    props.onStartDateChange(newValue.toDate());
+    dispatch(
+      campaignActions.filterChanged({
+        type: "START_DATE_CHANGE",
+        value: newValue.toDate(),
+      })
+    );
   };
 
   const endDateChangeHandler = (newValue) => {
-    props.onEndDateChange(newValue.toDate());
+    dispatch(
+      campaignActions.filterChanged({
+        type: "END_DATE_CHANGE",
+        value: newValue.toDate(),
+      })
+    );
   };
 
   const searchNameChangeHandler = (event) => {
-    props.onSearchNameChange(event.target.value);
+    dispatch(
+      campaignActions.filterChanged({
+        type: "SEARCH_NAME_CHANGE",
+        value: event.target.value,
+      })
+    );
   };
 
   const clearFilterHandler = (event) => {
-    props.onStartDateChange(undefined);
-    props.onEndDateChange(undefined);
-    props.onSearchNameChange("");
-  }
+    dispatch(
+      campaignActions.filterChanged({
+        type: "START_DATE_CHANGE",
+        value: undefined,
+      })
+    );
+    dispatch(
+      campaignActions.filterChanged({
+        type: "END_DATE_CHANGE",
+        value: undefined,
+      })
+    );
+    dispatch(
+      campaignActions.filterChanged({
+        type: "SEARCH_NAME_CHANGE",
+        value: "",
+      })
+    );
+  };
 
   return (
     <div className={classes.panel}>
@@ -68,8 +101,7 @@ const CampaignSearch = (props) => {
       </div>
       {(startDateValue !== undefined ||
         endDateValue !== undefined ||
-        (searchNameValue !== undefined &&
-        searchNameValue.length !== 0)) && (
+        (searchNameValue !== undefined && searchNameValue.length !== 0)) && (
         <Tooltip title="Clear Filters">
           <IconButton onClick={clearFilterHandler}>
             <ClearIcon color="primary" />
